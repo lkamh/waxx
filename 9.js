@@ -1,4 +1,4 @@
-auto.waitFor(); //mode = "fast"
+auto.waitFor(); 
 var delay_time = 3000;
 device.wakeUpIfNeeded();//如果屏幕没有点亮，则唤醒设备。
 
