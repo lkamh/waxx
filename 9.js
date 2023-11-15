@@ -3,36 +3,77 @@ var delay_time = 3000;
 device.wakeUpIfNeeded();//如果屏幕没有点亮，则唤醒设备。
 
 // 读取自定义配置
-var XXZS_CONFIG = storages.create("XXZS_CONFIG");
-var watchdog = XXZS_CONFIG.get("watchdog", "1800");
-var slide_verify = XXZS_CONFIG.get("slide_verify", "300");
-//var fast_mode = XXZS_CONFIG.get("fast_mode", false);
+var TTXS_PRO_CONFIG = storages.create("TTXS_PRO_CONFIG");
+var watchdog = TTXS_PRO_CONFIG.get("watchdog", "1800");
+var slide_verify = TTXS_PRO_CONFIG.get("slide_verify", "300");
+//var fast_mode = TTXS_PRO_CONFIG.get("fast_mode", false);
 var fast_mode = false;
-var ddtong = XXZS_CONFIG.get("ddtong", false);
-var is_exit = XXZS_CONFIG.get("is_exit", true);
-var pinglun = XXZS_CONFIG.get("pinglun", true);
-var shipin = XXZS_CONFIG.get("shipin", true);
-var wenzhang = XXZS_CONFIG.get("wenzhang", true);
-var meiri = XXZS_CONFIG.get("meiri", true);
-var quwei = XXZS_CONFIG.get("quwei", true);
-var meizhou = XXZS_CONFIG.get("meizhou", 0);
-var zhuanxiang = XXZS_CONFIG.get("zhuanxiang", 0);
-var tiaozhan = XXZS_CONFIG.get("tiaozhan", true);
+var ddtong = TTXS_PRO_CONFIG.get("ddtong", false);
+var is_exit = TTXS_PRO_CONFIG.get("is_exit", true);
+var pinglun = TTXS_PRO_CONFIG.get("pinglun", true);
+var shipin = TTXS_PRO_CONFIG.get("shipin", true);
+var wenzhang = TTXS_PRO_CONFIG.get("wenzhang", true);
+var meiri = TTXS_PRO_CONFIG.get("meiri", true);
+var quwei = TTXS_PRO_CONFIG.get("quwei", true);
+var meizhou = TTXS_PRO_CONFIG.get("meizhou", 0);
+var zhuanxiang = TTXS_PRO_CONFIG.get("zhuanxiang", 0);
+var tiaozhan = TTXS_PRO_CONFIG.get("tiaozhan", true);
 var ocr_choice = 0;//修改默认OCR为Google
-var ocr_maxtime = XXZS_CONFIG.get("ocr_maxtime", "5000");
-var duizhan_mode = XXZS_CONFIG.get("duizhan_mode", 0);
-var guaji = XXZS_CONFIG.get("guaji", true);
-var siren = XXZS_CONFIG.get("siren", true);
-var dacuo_num = XXZS_CONFIG.get("dacuo_num", "2");
-var shuangren = XXZS_CONFIG.get("shuangren", true);
-var bendi = XXZS_CONFIG.get("bendi", true);
-var dingyue = XXZS_CONFIG.get("dingyue", 0);
-var pushplus = XXZS_CONFIG.get("pushplus", "");
-var yl_on = XXZS_CONFIG.get("yl_on", true);
-var yinliang = XXZS_CONFIG.get("yinliang", "0");
-var multifly = XXZS_CONFIG.get("multifly", true);
-var zhanghao = XXZS_CONFIG.get("zhanghao", "");
-var comment = XXZS_CONFIG.get("comment", "全心全意为人民服务|不忘初心，牢记使命|不忘初心，方得始终|永远坚持党的领导|富强、民主、文明、和谐|自由，平等，公正，法治");
+var ocr_maxtime = TTXS_PRO_CONFIG.get("ocr_maxtime", "5000");
+var duizhan_mode = TTXS_PRO_CONFIG.get("duizhan_mode", 0);
+var guaji = TTXS_PRO_CONFIG.get("guaji", true);
+var siren = TTXS_PRO_CONFIG.get("siren", true);
+var dacuo_num = TTXS_PRO_CONFIG.get("dacuo_num", "2");
+var shuangren = TTXS_PRO_CONFIG.get("shuangren", true);
+var bendi = TTXS_PRO_CONFIG.get("bendi", true);
+var dingyue = TTXS_PRO_CONFIG.get("dingyue", 0);
+var pushplus = TTXS_PRO_CONFIG.get("pushplus", "");
+var yl_on = TTXS_PRO_CONFIG.get("yl_on", true);
+var yinliang = TTXS_PRO_CONFIG.get("yinliang", "0");
+var multifly = TTXS_PRO_CONFIG.get("multifly", true);
+var zhanghao = TTXS_PRO_CONFIG.get("zhanghao", "");
+var comment = TTXS_PRO_CONFIG.get("comment", "全心全意为人民服务|不忘初心，牢记使命|不忘初心，方得始终|永远坚持党的领导|富强、民主、文明、和谐|自由，平等，公正，法治");
+
+
+function google_ocr_api(img) {
+  console.log('GoogleMLKit文字识别中');
+  let list = googleOcr.detect(img); // 识别文字，并得到results
+  let eps = 30; // 坐标误差
+  for (
+    var i = 0; i < list.length; i++ // 选择排序对上下排序,复杂度O(N²)但一般list的长度较短只需几十次运算
+  ) {
+    for (var j = i + 1; j < list.length; j++) {
+      if (list[i]['bounds']['bottom'] > list[j]['bounds']['bottom']) {
+        var tmp = list[i];
+        list[i] = list[j];
+        list[j] = tmp;
+      }
+    }
+  }
+
+  for (
+    var i = 0; i < list.length; i++ // 在上下排序完成后，进行左右排序
+  ) {
+    for (var j = i + 1; j < list.length; j++) {
+      // 由于上下坐标并不绝对，采用误差eps
+      if (
+        Math.abs(list[i]['bounds']['bottom'] - list[j]['bounds']['bottom']) <
+        eps &&
+        list[i]['bounds']['left'] > list[j]['bounds']['left']
+      ) {
+        var tmp = list[i];
+        list[i] = list[j];
+        list[j] = tmp;
+      }
+    }
+  }
+  let res = '';
+  for (var i = 0; i < list.length; i++) {
+    res += list[i]['text'];
+  }
+  list = null;
+  return res;
+}
 
 //判断是否快速模式
 if (fast_mode) {
@@ -41,7 +82,7 @@ if (fast_mode) {
 events.observeToast();//开启 Toast 监听，Toast 监听依赖于无障碍服务，因此此函数会确保无障碍服务运行
 sleep(delay_time);//暂停3秒
 /*****************更新内容弹窗部分*****************/
-var storage = storages.create('xklong');
+var storage = storages.create('songgedodo');
 // 脚本版本号
 var last_version = "V2.0";
 var engine_version = "V2.1";
@@ -55,11 +96,34 @@ if (storage.get(engine_version, true)) {
   }//选择否，则永久关闭窗口
 }
 var w = fInit();
-
+// console.setTitle("天天向上");
+// console.show();
 fInfo("学习助手" + newest_version + "脚本初始化");
 // 初始化宽高
 var [device_w, device_h] = init_wh();//init_wh()是返回设备宽和高的函数
-
+// log("fina:", device_w, device_h);
+// OCR初始化，重写内置OCR module
+if (ocr_choice == 2) {
+  fInfo("初始化第三方ocr插件");
+  try {
+    ocr = plugins.load("com.hraps.ocr");
+    ocr.recognizeText = function (img) {
+      let results = this.detect(img.getBitmap(), 1);
+      let all_txt = "";
+      for (let i = 0; i < results.size(); i++) {
+        let re = results.get(i);
+        all_txt += re.text;
+      }
+      return all_txt
+    }
+  } catch (e) {
+    fError("未安装第三方OCR插件，请安装后重新运行");
+    alert("未安装第三方OCR插件，点击确认跳转浏览器下载，密码为ttxs");
+    app.openUrl("https://wwc.lanzouo.com/ikILs001d0wh");
+    exit();
+  }
+}
+// sleep(2000);
 // 自动允许权限进程
 threads.start(function () {
   //在新线程执行的代码
@@ -81,11 +145,13 @@ if (!requestScreenCapture(false)) { // false为竖屏方向
 //加载Google OCR插件
 if (ocr_choice == 0) {
   fInfo("初始化MLkitOCR插件");
-  var MLKitOCR = plugins.load('org.autojs.autojspro.plugin.mlkit.ocr');
-  var googleOcr = new MLKitOCR();
-} else {
-  fError("GoogleMLKit插件加载失败");
-  exit();
+  try {
+    var MLKitOCR = plugins.load('org.autojs.autojspro.plugin.mlkit.ocr');
+    var googleOcr = new MLKitOCR();
+  } catch (e) {
+    fError("GoogleMLKit插件加载失败");
+    exit();
+  }
 }
 // 防止设备息屏
 fInfo("设置屏幕常亮");
@@ -105,7 +171,7 @@ try {
 fInfo("正在加载专项题库......请稍等\n题库版本:" + update_info["dati_tiku_version"]);
 var dati_tiku = [];
 try {
-  dati_tiku = update_dati_tiku();
+  dati_tiku = update_dati_tiku()
 } catch (e) {
   fError("网络原因未获取到在线题库，请尝试切换流量或者更换114DNS");
   dati_tiku = get_tiku_by_ct('https://webapi.ctfile.com/get_file_url.php?uid=35157972&fid=555754562&file_chk=94c3c662ba28f583d2128a1eb9d78af4&app=0&acheck=2&rd=0.14725283060014105');
@@ -476,6 +542,224 @@ function do_meiri() {
   return true;
 }
 
+/********每周答题*********/
+function do_meizhou() {
+  text("每周答题").findOne().parent().click();
+  fSet("title", "每周答题…");
+  fClear();
+  // 等待加载
+  textMatches(/.*月|发现新版本/).waitFor();
+  if (text("发现新版本").exists()) return fError("有弹窗无法每周答题，可使用旧版修改版本号版取消弹窗"), sleep(1000), text("取消").findOne().click(), sleep(1000), back(), text("我要答题").waitFor(),
+    sleep(1000), back(), ran_sleep(), !0;
+  let scoll = depth(21).scrollable().findOne();
+  // 下面是倒叙作答
+  if (meizhou_dao) {
+    fInfo("倒序查找未做题目");
+    //当出现已作答时，点击最后一个未作答
+    while (!text("已作答").exists()) {
+      scoll.scrollForward();
+      sleep(300);
+    }
+    var clt = text("未作答").find();
+    if (clt.empty()) return fInfo("每周答题全部已作答。"), ran_sleep(), back(), text("每周答题").waitFor(),
+      sleep(1000), back(), text("我要答题").waitFor(), sleep(1E3), back(), text("我的").waitFor(), ran_sleep(), !0;
+    var title = clt[clt.length - 1].parent().child(0).text();
+    fInfo(title + "开始作答");
+    clt[clt.length - 1].parent().click();
+    // 测试用
+    // text("已作答").findOnce(0).click();
+  }
+  // 下面是正序作答
+  else {
+    fInfo("正序查找未做题目");
+    // 找到未作答就停止滚动
+    let dixian_slt = text("您已经看到了我的底线").filter(function (w) {
+      log("底线：", w.bounds().top, device_h);
+      return w.bounds().top <= device_h - 30;
+    });
+    //while (true) { //测试用
+    while (!text("未作答").exists()) {
+      if (dixian_slt.exists()) return fInfo("每周答题全部已作答。"),
+        back(), text("每周答题").waitFor(), sleep(1000), back(), text("我要答题").waitFor(), sleep(1000), back(), text("我的").waitFor(), ran_sleep(), !0;
+      // 如果到底则设置倒序为true
+      scoll.scrollForward();
+      sleep(200);
+    }
+    title = text("未作答").findOne().parent().child(0).text();
+    fInfo(title + "开始作答");
+    text("未作答").findOne().parent().click();
+  }
+  // 等待加载
+  text("查看提示").waitFor();
+  // 获取右上题号，如1 /5
+  var tihao = className("android.view.View").depth(24).findOnce(1).text();
+  var num = Number(tihao[0]);
+  var sum = Number(tihao[tihao.length - 1]);
+  var substr = tihao.slice(1);
+  while (num <= sum) {
+    fClear();
+    fInfo("第" + num + "题");
+    // 等待加载
+    text(num + substr).waitFor();
+    num++;
+    do_exec("（每周）");
+    // 点击确定下一题
+    depth(20).text("确定").findOne().click();
+    ran_sleep();
+    // 如果题做错了重来
+    if (text("下一题").exists() || text("完成").exists()) {
+      //toastLog(title + "我无能为力啦，请手动作答吧");
+      fInfo("做错尝试重答");
+      text("答案解析").waitFor();
+      upload_wrong_exec("（每周）");
+      storage.put('dati_tiku', dati_tiku);
+      back();
+      text("退出").findOne().click();
+      ran_sleep();
+      back();
+      text("每周答题").waitFor();
+      ran_sleep();
+      return false;
+    }
+  }
+  // 循环结束完成答题
+  text("返回").findOne().click();
+  sleep(1000);
+  back();
+  text("每周答题").waitFor();
+  sleep(1000);
+  back();
+  text("我要答题").waitFor();
+  sleep(1000);
+  back();
+  text("我的").waitFor();
+  ran_sleep();
+  return true;
+}
+
+/********专项答题*********/
+/*专项答题中提示的层次与每日每周的不一样
+ * 专项答题出现的倒计时会影响22,23层的结构*/
+function do_zhuanxiang() {
+  entry_jifen_project("专项答题");
+  fSet("title", "专项答题…");
+  fClear();
+  // 等待加载
+  depth(23).waitFor();
+  ran_sleep();
+  let scoll = depth(21).indexInParent(1).scrollable().findOne();
+  //let new_tihao = [];
+  // 下面是倒序答题
+  if (zhuanxiang_dao) {
+    // 当出现已满分时，点击最后一个开始答题
+    while (!text("已满分").exists()) {
+      scoll.scrollForward();
+      // 不加延迟会很卡
+      sleep(200);
+    }
+    var clt = text("开始答题").find();
+    if (clt.empty()) {
+      fInfo("专项答题全部已作答。");
+      back();
+      text("登录").waitFor();
+      ran_sleep();
+      return true;
+    }
+    // 点击最后一项
+    clt[clt.length - 1].click();
+  }
+  // 下面是正序
+  else {
+    // 直到找到开始答题
+    let dixian_slt = text("您已经看到了我的底线").filter(function (w) {
+      return w.bounds().top <= device_h - 30;
+    });
+    //while (true) { //测试用
+    while (!text("开始答题").exists()) { //开始答题
+      // 如果到底则设置倒序为true
+      if (dixian_slt.exists()) {
+        //storage_user.put('zhuanxiang_dao', true); 自定义不用读取
+        fInfo("专项答题全部已作答。");
+        back();
+        text("登录").waitFor();
+        ran_sleep();
+        return true;
+      }
+      // 滚动20次
+      for (i = 0; i < 15; i++) {
+        scoll.scrollForward();
+        // 不加延迟会很卡
+        sleep(300);
+      }
+    }
+    text("开始答题").findOne().click();
+  }
+  ran_sleep();
+  // 等待加载
+  text("查看提示").waitFor();
+  sleep(2000);
+  // 获取右上题号，如1 /5
+  var tihao = className("android.view.View").depth(24).findOnce(1).text();
+  // 需要加个斜杠转义
+  let reg = /(\d+) \/(\d+)/;
+  var num = Number(tihao.match(reg)[1]);
+  var sum = Number(tihao.match(reg)[2]);
+  var substr = " /" + sum;
+  //log(tihao);
+  while (num <= sum) {
+    fClear();
+    fInfo("第" + num + "题");
+    // 等待加载
+    text(num + substr).waitFor();
+    num++;
+    do_exec();
+    // 点击确定下一题
+    let next = className("android.view.View").filter(function (l) {
+      return (l.text() == "下一题") || (l.text() == "完成");
+    });
+    next.findOne().click();
+    //     if (!click("下一题")) {
+    //       click("完成");
+    //     }
+    ran_sleep();
+  }
+  // 循环结束完成答题
+  text("查看解析").waitFor();
+  sleep(1000);
+  // 如果题目答错，循环每一题并添加错题
+  if (textMatches(/\d+分/).findOne().text() != "100分") {
+    fInfo("有错题，尝试上传错题");
+    text("查看解析").findOne().click();
+    tihao = textMatches(reg).findOne().text();
+    num = Number(tihao.match(reg)[1]);
+    sum = Number(tihao.match(reg)[2]);
+    substr = " /" + sum;
+    //log(tihao);
+    sleep(1500);
+    while (num <= sum) {
+      // 等待加载
+      text(num + substr).waitFor();
+      num++;
+      if (textEndsWith("回答错误").exists()) {
+        upload_wrong_exec();
+      }
+      // 点击确定下一题
+      let next = className("android.view.View").filter(function (l) {
+        return (l.text() == "下一题") || (l.text() == "完成");
+      });
+      next.findOne().click();
+      sleep(random(1000, 1500));
+    }
+    storage.put('dati_tiku', dati_tiku);
+  } else {
+    back();
+    ran_sleep();
+  }
+  back();
+  text("登录").waitFor();
+  ran_sleep();
+  return true;
+}
 
 /********挑战答题*********/
 function do_tiaozhan() {
@@ -768,6 +1052,7 @@ function do_duizhan1(renshu) {
     } else if (que_key = include_reg.exec(que_txt)) {
       replace_sign = "include_ocr_replace";
     }
+
     let ans_list = get_ans_by_tiku(que_txt);
     //log(ans_list);
     let idx_dict = {
@@ -776,6 +1061,7 @@ function do_duizhan1(renshu) {
       "C": 2,
       "D": 3
     };
+
     // 如果上面答案不唯一或者不包含找到的选项，直到选项完全出现在屏幕
     try {
       while (className("android.widget.ListView").findOne(1000).indexInParent() == 0) { }
@@ -786,15 +1072,13 @@ function do_duizhan1(renshu) {
       sleep(200);
       continue;
     }
-    //临时添加
-    console.log("选项位置定位");
     let xuanxiang_list = className("android.widget.ListView").findOne(1000);
     let xuanxiang_index = xuanxiang_list.indexInParent();
     let xuanxiang_list_x = xuanxiang_list.bounds().left;
     let xuanxiang_list_y = xuanxiang_list.bounds().top;
     let xuanxiang_list_w = xuanxiang_list.bounds().width();
     let xuanxiang_list_h = xuanxiang_list.bounds().height();
-    console.log("选项位置定位结束");
+
     if (!xuanxiang_list || !xuanxiang_list.parent().childCount() || !xuanxiang_list.parent().child(0)) {
       log("xuan_box is null");
       err_flag = false;
@@ -1057,6 +1341,7 @@ function dacuo(renshu) {
       sleep(200);
       continue;
     }
+    num++;
   }
 }
 
@@ -1450,7 +1735,13 @@ function get_ans_by_ocr1() {
   //   let resp = ocr.recognize(img).results;
   //   ans = ocr_rslt_to_txt(resp);
   // 为适配第三方OCR改动
-  ans = google_ocr_api(img);
+  if (ocr_choice == 0) {
+    ans = google_ocr_api(img);
+  } else if (ocr_choice == 1) {
+    ans = paddle_ocr_api(img);
+  } else {
+    ans = ocr.recognizeText(img);
+  }
   if (!ans) {
     fInfo("未识别出文字");
   } else {
@@ -1574,12 +1865,12 @@ function update_dati_tiku() {
     } else {
       fInfo("未检测到题库更新，已用历史题库");
     }
-    return dati_tiku;
+    return dati_tiku
   } catch (e) {
     console.warn(e);
     if (dati_tiku) {
       fInfo("未识别出离线题库，已用历史题库");
-      return dati_tiku;
+      return dati_tiku
     }
   }
   //   } 上面else的}
@@ -1635,7 +1926,7 @@ function get_ans_by_tiku(que_txt) {
     //let simi = str_similar(ti_txt.slice(0, len+6), que_txt);
     let simi = str_similar(ti_txt.slice(0, len), que_txt);
     //if (ti_txt.indexOf(que_txt) >= 0) {
-      if (simi >= 0.25) {
+    if (simi >= 0.25) {
       if (simi > max_simi) {
         ans_list.length = 0;
         ans_list.push(tiku[ti][1]);
@@ -1652,7 +1943,7 @@ function get_ans_by_tiku(que_txt) {
 function get_tiku_by_http(link) {
   // 通过gitee的原始数据保存题库
   if (!link) {
-    link = "https://mart-17684809426.coding.net/p/tiku/d/tiku/git/raw/master/tiku_json.txt";
+    link = "https://mart-17684809426.coding.net/p/tiku/d/tiku/git/raw/master/tiku_json.txt"
   }
   let req = http.get(link, {//没有回调函数，返回请求的响应
     headers: {
@@ -1674,7 +1965,7 @@ function get_tiku_by_ct(link) {
   // 获取答案html并解析
   // 城通网盘解析
   if (!link) {
-    link = "https://webapi.ctfile.com/get_file_url.php?uid=35157972&fid=546999609&file_chk=e83f4b72a2f142cca6ee87c64baba15c&app=0&acheck=2&rd=0.9023931062078081";
+    link = "https://webapi.ctfile.com/get_file_url.php?uid=35157972&fid=546999609&file_chk=e83f4b72a2f142cca6ee87c64baba15c&app=0&acheck=2&rd=0.9023931062078081"
   }
   let req = http.get(link);
   //   let resp_str = req.body.string();
@@ -2180,7 +2471,7 @@ function xxqg(userinfo) {
   if (userinfo) {
     var [username, pwd, token] = userinfo;
     login(username, pwd);
-    storage_user = storages.create('xklong:' + username);
+    storage_user = storages.create('songgedodo:' + username);
     name = username.substr(0, 3) + "****" + username.substr(-4);
   } else name = "", storage_user = storage;
   fSet("username", name);
@@ -2327,6 +2618,7 @@ function xxqg(userinfo) {
             fInfo("即将开始答题");
             sleep(2000);
             dacuo(4);
+            fInfo("错题已答完" + (i + 1) + "轮");
             fClear();
           }
         } else if (text("随机匹配").exists()) {
@@ -2446,46 +2738,8 @@ function main(userinfo) {
   fError("已重试3次，可能无障碍服务出现故障，退出脚本");
   exit();
 }
-//googleOcr配置
-function google_ocr_api(img) {
-  console.log('GoogleMLKit文字识别中');
-  let list = googleOcr.detect(img); // 识别文字，并得到results
-  let eps = 30; // 坐标误差
-  for (
-    var i = 0; i < list.length; i++ // 选择排序对上下排序,复杂度O(N²)但一般list的长度较短只需几十次运算
-  ) {
-    for (var j = i + 1; j < list.length; j++) {
-      if (list[i]['bounds']['bottom'] > list[j]['bounds']['bottom']) {
-        var tmp = list[i];
-        list[i] = list[j];
-        list[j] = tmp;
-      }
-    }
-  }
 
-  for (
-    var i = 0; i < list.length; i++ // 在上下排序完成后，进行左右排序
-  ) {
-    for (var j = i + 1; j < list.length; j++) {
-      // 由于上下坐标并不绝对，采用误差eps
-      if (
-        Math.abs(list[i]['bounds']['bottom'] - list[j]['bounds']['bottom']) <
-        eps &&
-        list[i]['bounds']['left'] > list[j]['bounds']['left']
-      ) {
-        var tmp = list[i];
-        list[i] = list[j];
-        list[j] = tmp;
-      }
-    }
-  }
-  let res = '';
-  for (var i = 0; i < list.length; i++) {
-    res += list[i]['text'];
-  }
-  list = null;
-  return res;
-}
+
 /*******************主程序部分*******************/
 /********定义全局变量*********/
 var zhuanxiang_dao, dingyue_dao, storage_user, name, jinri, zongfen;
