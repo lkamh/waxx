@@ -1,79 +1,40 @@
-auto.waitFor(); 
+auto.waitFor();
 var delay_time = 3000;
 device.wakeUpIfNeeded();//如果屏幕没有点亮，则唤醒设备。
 
 // 读取自定义配置
-var TTXS_PRO_CONFIG = storages.create("TTXS_PRO_CONFIG");
-var watchdog = TTXS_PRO_CONFIG.get("watchdog", "1800");
-var slide_verify = TTXS_PRO_CONFIG.get("slide_verify", "300");
-//var fast_mode = TTXS_PRO_CONFIG.get("fast_mode", false);
+var XXZS_CONFIG = storages.create("XXZS_CONFIG");
+var watchdog = XXZS_CONFIG.get("watchdog", "1800");
+var slide_verify = XXZS_CONFIG.get("slide_verify", "300");
+//var fast_mode = XXZS_CONFIG.get("fast_mode", false);
 var fast_mode = false;
-var ddtong = TTXS_PRO_CONFIG.get("ddtong", false);
-var is_exit = TTXS_PRO_CONFIG.get("is_exit", true);
-var pinglun = TTXS_PRO_CONFIG.get("pinglun", true);
-var shipin = TTXS_PRO_CONFIG.get("shipin", true);
-var wenzhang = TTXS_PRO_CONFIG.get("wenzhang", true);
-var meiri = TTXS_PRO_CONFIG.get("meiri", true);
-var quwei = TTXS_PRO_CONFIG.get("quwei", true);
-var meizhou = TTXS_PRO_CONFIG.get("meizhou", 0);
-var zhuanxiang = TTXS_PRO_CONFIG.get("zhuanxiang", 0);
-var tiaozhan = TTXS_PRO_CONFIG.get("tiaozhan", true);
+var ddtong = XXZS_CONFIG.get("ddtong", false);
+var is_exit = XXZS_CONFIG.get("is_exit", true);
+var pinglun = XXZS_CONFIG.get("pinglun", true);
+var shipin = XXZS_CONFIG.get("shipin", true);
+var wenzhang = XXZS_CONFIG.get("wenzhang", true);
+var meiri = XXZS_CONFIG.get("meiri", true);
+var quwei = XXZS_CONFIG.get("quwei", true);
+var meizhou = XXZS_CONFIG.get("meizhou", 0);
+var zhuanxiang = XXZS_CONFIG.get("zhuanxiang", 0);
+var tiaozhan = XXZS_CONFIG.get("tiaozhan", true);
 var ocr_choice = 0;//修改默认OCR为Google
-var ocr_maxtime = TTXS_PRO_CONFIG.get("ocr_maxtime", "5000");
-var duizhan_mode = TTXS_PRO_CONFIG.get("duizhan_mode", 0);
-var guaji = TTXS_PRO_CONFIG.get("guaji", true);
-var siren = TTXS_PRO_CONFIG.get("siren", true);
-var dacuo_num = TTXS_PRO_CONFIG.get("dacuo_num", "2");
-var shuangren = TTXS_PRO_CONFIG.get("shuangren", true);
-var bendi = TTXS_PRO_CONFIG.get("bendi", true);
-var dingyue = TTXS_PRO_CONFIG.get("dingyue", 0);
-var pushplus = TTXS_PRO_CONFIG.get("pushplus", "");
-var yl_on = TTXS_PRO_CONFIG.get("yl_on", true);
-var yinliang = TTXS_PRO_CONFIG.get("yinliang", "0");
-var multifly = TTXS_PRO_CONFIG.get("multifly", true);
-var zhanghao = TTXS_PRO_CONFIG.get("zhanghao", "");
-var comment = TTXS_PRO_CONFIG.get("comment", "全心全意为人民服务|不忘初心，牢记使命|不忘初心，方得始终|永远坚持党的领导|富强、民主、文明、和谐|自由，平等，公正，法治");
+var ocr_maxtime = XXZS_CONFIG.get("ocr_maxtime", "5000");
+var duizhan_mode = XXZS_CONFIG.get("duizhan_mode", 0);
+var guaji = XXZS_CONFIG.get("guaji", true);
+var siren = XXZS_CONFIG.get("siren", true);
+var dacuo_num = XXZS_CONFIG.get("dacuo_num", "2");
+var shuangren = XXZS_CONFIG.get("shuangren", true);
+var bendi = XXZS_CONFIG.get("bendi", true);
+var dingyue = XXZS_CONFIG.get("dingyue", 0);
+var pushplus = XXZS_CONFIG.get("pushplus", "");
+var yl_on = XXZS_CONFIG.get("yl_on", true);
+var yinliang = XXZS_CONFIG.get("yinliang", "0");
+var multifly = XXZS_CONFIG.get("multifly", true);
+var zhanghao = XXZS_CONFIG.get("zhanghao", "");
+var comment = XXZS_CONFIG.get("comment", "全心全意为人民服务|不忘初心，牢记使命|不忘初心，方得始终|永远坚持党的领导|富强、民主、文明、和谐|自由，平等，公正，法治");
 
 
-function google_ocr_api(img) {
-  console.log('GoogleMLKit文字识别中');
-  let list = googleOcr.detect(img); // 识别文字，并得到results
-  let eps = 30; // 坐标误差
-  for (
-    var i = 0; i < list.length; i++ // 选择排序对上下排序,复杂度O(N²)但一般list的长度较短只需几十次运算
-  ) {
-    for (var j = i + 1; j < list.length; j++) {
-      if (list[i]['bounds']['bottom'] > list[j]['bounds']['bottom']) {
-        var tmp = list[i];
-        list[i] = list[j];
-        list[j] = tmp;
-      }
-    }
-  }
-
-  for (
-    var i = 0; i < list.length; i++ // 在上下排序完成后，进行左右排序
-  ) {
-    for (var j = i + 1; j < list.length; j++) {
-      // 由于上下坐标并不绝对，采用误差eps
-      if (
-        Math.abs(list[i]['bounds']['bottom'] - list[j]['bounds']['bottom']) <
-        eps &&
-        list[i]['bounds']['left'] > list[j]['bounds']['left']
-      ) {
-        var tmp = list[i];
-        list[i] = list[j];
-        list[j] = tmp;
-      }
-    }
-  }
-  let res = '';
-  for (var i = 0; i < list.length; i++) {
-    res += list[i]['text'];
-  }
-  list = null;
-  return res;
-}
 
 //判断是否快速模式
 if (fast_mode) {
@@ -102,27 +63,7 @@ fInfo("学习助手" + newest_version + "脚本初始化");
 // 初始化宽高
 var [device_w, device_h] = init_wh();//init_wh()是返回设备宽和高的函数
 // log("fina:", device_w, device_h);
-// OCR初始化，重写内置OCR module
-if (ocr_choice == 2) {
-  fInfo("初始化第三方ocr插件");
-  try {
-    ocr = plugins.load("com.hraps.ocr");
-    ocr.recognizeText = function (img) {
-      let results = this.detect(img.getBitmap(), 1);
-      let all_txt = "";
-      for (let i = 0; i < results.size(); i++) {
-        let re = results.get(i);
-        all_txt += re.text;
-      }
-      return all_txt
-    }
-  } catch (e) {
-    fError("未安装第三方OCR插件，请安装后重新运行");
-    alert("未安装第三方OCR插件，点击确认跳转浏览器下载，密码为ttxs");
-    app.openUrl("https://wwc.lanzouo.com/ikILs001d0wh");
-    exit();
-  }
-}
+
 // sleep(2000);
 // 自动允许权限进程
 threads.start(function () {
@@ -2620,6 +2561,7 @@ function xxqg(userinfo) {
             dacuo(4);
             fInfo("错题已答完" + (i + 1) + "轮");
             fClear();
+            fInfo("即将进入答错第" + (i + 2) + "轮");
           }
         } else if (text("随机匹配").exists()) {
           toastLog("双人对战开始");
@@ -2777,7 +2719,46 @@ if (multifly && zhanghao) {
 if (noverify_thread.isAlive()) {
   noverify_thread.interrupt();
 }
+//GoogleOcr配置
+function google_ocr_api(img) {
+  console.log('GoogleMLKit文字识别中');
+  let list = googleOcr.detect(img); // 识别文字，并得到results
+  let eps = 30; // 坐标误差
+  for (
+    var i = 0; i < list.length; i++ // 选择排序对上下排序,复杂度O(N²)但一般list的长度较短只需几十次运算
+  ) {
+    for (var j = i + 1; j < list.length; j++) {
+      if (list[i]['bounds']['bottom'] > list[j]['bounds']['bottom']) {
+        var tmp = list[i];
+        list[i] = list[j];
+        list[j] = tmp;
+      }
+    }
+  }
 
+  for (
+    var i = 0; i < list.length; i++ // 在上下排序完成后，进行左右排序
+  ) {
+    for (var j = i + 1; j < list.length; j++) {
+      // 由于上下坐标并不绝对，采用误差eps
+      if (
+        Math.abs(list[i]['bounds']['bottom'] - list[j]['bounds']['bottom']) <
+        eps &&
+        list[i]['bounds']['left'] > list[j]['bounds']['left']
+      ) {
+        var tmp = list[i];
+        list[i] = list[j];
+        list[j] = tmp;
+      }
+    }
+  }
+  let res = '';
+  for (var i = 0; i < list.length; i++) {
+    res += list[i]['text'];
+  }
+  list = null;
+  return res;
+}
 /*****************结束后配置*****************/
 //console.show();
 // console.clear();
