@@ -50,7 +50,7 @@ var engine_version = "V2.1";
 var newest_version = "V2.1";
 if (storage.get(engine_version, true)) {
   storage.remove(last_version);
-  let gengxin_rows = "脚本有风险，仅供学习交流;更新内容：;1.更换AutoJsPro打包;2.更新GoogleMltOCR插件;3.精简四人赛答题代码;脚本测试环境：强国V2.48.0;（点击取消不再提示）".split(";");
+  let gengxin_rows = "脚本有风险，仅供学习交流;更新内容：;1.更换AutoJsPro打包;2.更新GoogleMLT_OCR插件;3.添加激活验证机制;4.精简四人赛答题代码;脚本测试环境：强国V2.48.0;（点击取消不再提示）".split(";");
   let is_show = confirm(engine_version + "版更新内容", gengxin_rows.join("\n"));//confirm()会弹出一个对话框并让用户选择"是"或"否"，如果选择"是"则返回true
   if (!is_show) {
     storage.put(engine_version, false);
