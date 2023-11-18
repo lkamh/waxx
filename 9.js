@@ -741,7 +741,7 @@ function do_tiaozhan() {
     }
     // 获取答案列表，可能找到多个答案
     // let ans_list = get_ans_by_http(que_txt.replace(/来源：.*|出题单位：.+/, ""));
-    let ans_list = get_ans_by_tiku(que_txt.replace(/[^\u4e00-\u9fa5\d]|来源：.+|出题单位：.+/g, ""));
+    let ans_list = get_ans_by_tiku(que_txt.replace(/[^\u4e00-\u9fa5\d]/g, ""));
     //     fInfo(que_txt.replace(/[^\u4e00-\u9fa5\d]|来源：.+|出题单位：.+/g, ""));
     //log("答案："+ans_list);
     if (total >= max_total) {
