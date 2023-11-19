@@ -107,6 +107,7 @@ try {
   tiku = get_tiku_by_http(update_info["tiku_link"]);
 } catch (e) {
   tiku = get_tiku_by_http(update_info["tiku_link2"]);
+  toastLog("题库链接1失效");
 }
 // var tiku = get_tiku_by_gitee();
 fInfo("正在加载专项题库......请稍等\n题库版本:" + update_info["dati_tiku_version"]);
