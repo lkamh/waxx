@@ -32,6 +32,7 @@ var yl_on = XXZS_CONFIG.get("yl_on", true);
 var yinliang = XXZS_CONFIG.get("yinliang", "0");
 var multifly = XXZS_CONFIG.get("multifly", true);
 var zhanghao = XXZS_CONFIG.get("zhanghao", "");
+var login_zh1 = XXZS_CONFIG.get("login_zh1", true);
 var comment = XXZS_CONFIG.get("comment", "全心全意为人民服务|不忘初心，牢记使命|不忘初心，方得始终|永远坚持党的领导|富强、民主、文明、和谐|自由，平等，公正，法治");
 
 
@@ -2710,9 +2711,11 @@ if (multifly && zhanghao) {
     main(userinfo);
   }
   fClear();
-  fInfo("登录回账号1");
-  console.verbose(zhanghao_list[0][0], zhanghao_list[0][1]);
-  login(zhanghao_list[0][0], zhanghao_list[0][1]);
+  if(login_zh1){
+    fInfo("登录回账号1");
+    console.verbose(zhanghao_list[0][0], zhanghao_list[0][1]);
+    login(zhanghao_list[0][0], zhanghao_list[0][1]);
+  }
 } else {
   main();
 }
