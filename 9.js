@@ -378,7 +378,7 @@ function do_wenzhang() {
       fError("检测到非文章界面，返回重新查找文章");
       back();
       sleep(2000);
-      for (i = 1; i <= 3; i++) {
+      for (let i = 1; i <= 3; i++) {
         swipe(device_w / 2, device_h * 0.7, device_w / 2, device_h * 0.3, 1000);
         sleep(3000);
       }
