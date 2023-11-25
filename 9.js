@@ -2647,7 +2647,7 @@ function xxqg(userinfo) {
   //   } else fError("V2.42及以上不支持每周答题"), back(), ran_sleep();   
   // }
   // 0 == dingyue || d || fError("未能识别出订阅界面，订阅不支持学习强国V2.33.0以上版本");
-  if (!zhanghao || multifly == false) return !0;
+  if (!zhanghao || !multifly || no_zh1) return !0;
   b = text("我的").findOne();
   log("mine:", b);
   b.click();
@@ -2720,6 +2720,7 @@ var jifen_map = {
 };
 // 分割账号
 var noverify_thread = noverify();
+var no_zh1 = false;
 if (multifly && zhanghao) {
   var zhanghao_list = [];
   for (let zh of zhanghao.split("\n")) {
@@ -2728,9 +2729,15 @@ if (multifly && zhanghao) {
   };
   // if (zhanghao_list.length > 3) {zhanghao_list.length = 3;}
   //console.verbose(zhanghao_list);
+  let zh_num = zhanghao_list.length;
+  let js_zh = 1;
   for (let userinfo of zhanghao_list) {
     console.verbose(userinfo);
+    if (!login_zh1 && js_zh == zh_num) {
+      no_zh1 = true;
+    }
     main(userinfo);
+    js_zh++;
   }
   fClear();
   if (login_zh1) {
