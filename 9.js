@@ -376,9 +376,18 @@ function do_wenzhang() {
     //进入非文章界面修复
     if (text("全部播放").findOne(3000)) {
       fError("检测到非文章界面，返回重新查找文章");
+      sleep(2000);
       back();
       sleep(2000);
-      for (let i = 1; i <= 3; i++) {
+      //划出该界面
+      for (let i = 1; i <= 2; i++) {
+        swipe(device_w / 2, device_h * 0.7, device_w / 2, device_h * 0.3, 1000);
+        sleep(3000);
+      }
+      while (true) {
+        if (idContains("general_card_title_id").exists()) {
+          break
+        }
         swipe(device_w / 2, device_h * 0.7, device_w / 2, device_h * 0.3, 1000);
         sleep(3000);
       }
@@ -2617,7 +2626,9 @@ function xxqg(userinfo) {
     try {
       send_pushplus(token, token2, sign_list)
     } catch (h) {
-      fError(h + ":push+推送失败，请尝试切换流量运行或者设置114DNS")
+      if (token) {
+        fError(h + ":push+推送失败，请尝试切换流量运行或者设置114DNS")
+      }
     }
   } else {
     send_pushplus(token, token2, sign_list)
