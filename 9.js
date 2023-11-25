@@ -373,6 +373,17 @@ function do_wenzhang() {
     //wen_box.click();
     let title_click = wen_box.parent().parent().click();
     fInfo("点击：" + title_click);
+    //进入非文章界面修复
+    if (text("全部播放").findOne(3000)) {
+      fError("检测到非文章界面，返回重新查找文章");
+      back();
+      sleep(2000);
+      for (i = 1; i <= 3; i++) {
+        swipe(device_w / 2, device_h * 0.7, device_w / 2, device_h * 0.3, 1000);
+        sleep(3000);
+      }
+      continue
+    }
     classNameContains("com.uc.webview.export").waitFor();
     fInfo("查找webview");
     let father_view = className("android.webkit.WebView").findOne(9000);
@@ -2711,7 +2722,7 @@ if (multifly && zhanghao) {
     main(userinfo);
   }
   fClear();
-  if(login_zh1){
+  if (login_zh1) {
     fInfo("登录回账号1");
     console.verbose(zhanghao_list[0][0], zhanghao_list[0][1]);
     login(zhanghao_list[0][0], zhanghao_list[0][1]);
