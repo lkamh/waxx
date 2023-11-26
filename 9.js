@@ -47,8 +47,8 @@ sleep(delay_time);//暂停3秒
 var storage = storages.create('songgedodo');
 // 脚本版本号
 var last_version = "V2.0";
-var engine_version = "V2.1";
-var newest_version = "V2.1";
+var engine_version = "V2.3";
+var newest_version = "V2.3";
 if (storage.get(engine_version, true)) {
   storage.remove(last_version);
   let gengxin_rows = "脚本有风险，仅供学习交流;更新内容：;1.更换AutoJsPro打包;2.更新GoogleMLT_OCR插件;3.添加激活验证机制;4.视频、文章阅读次数+2;5.精简四人赛答题代码;脚本测试环境：强国V2.48.0;（点击取消不再提示）".split(";");
