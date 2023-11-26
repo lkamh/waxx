@@ -2631,7 +2631,9 @@ function xxqg(userinfo) {
       }
     }
   } else {
-    send_pushplus(token, token2, sign_list)
+    try {
+      send_pushplus(token, token2, sign_list)
+    } catch (e) { }
   }
   back();
 
