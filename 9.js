@@ -378,6 +378,7 @@ function do_wenzhang() {
       fError("检测到非文章界面，返回重新查找文章");
       sleep(2000);
       back();
+      idContains("general_card_title_id").waitFor();
       sleep(2000);
       //划出该界面
       for (let i = 1; i <= 2; i++) {
@@ -387,9 +388,10 @@ function do_wenzhang() {
       while (true) {
         if (idContains("general_card_title_id").exists()) {
           break
+        } else {
+          swipe(device_w / 2, device_h * 0.7, device_w / 2, device_h * 0.3, 1000);
+          sleep(3000);
         }
-        swipe(device_w / 2, device_h * 0.7, device_w / 2, device_h * 0.3, 1000);
-        sleep(3000);
       }
       continue
     }
