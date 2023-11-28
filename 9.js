@@ -374,6 +374,7 @@ function do_wenzhang() {
     let title_click = wen_box.parent().parent().click();
     fInfo("点击：" + title_click);
     //进入非文章界面修复
+    fInfo("检测当前页面属性");
     if (text("全部播放").findOne(3000)) {
       fError("检测到非文章界面，返回重新查找文章");
       sleep(2000);
