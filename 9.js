@@ -386,14 +386,19 @@ function do_wenzhang() {
         swipe(device_w / 2, device_h * 0.7, device_w / 2, device_h * 0.3, 1000);
         sleep(3000);
       }
-      while (true) {
-        if (idContains("general_card_title_id").exists()) {
-          break
-        } else {
-          swipe(device_w / 2, device_h * 0.7, device_w / 2, device_h * 0.3, 1000);
-          sleep(3000);
-        }
+      // while (true) {
+      //   if (idContains("general_card_title_id").exists()) {
+      //     break
+      //   } else {
+      //     swipe(device_w / 2, device_h * 0.7, device_w / 2, device_h * 0.3, 1000);
+      //     sleep(3000);
+      //   }
+      // }
+      while (!wen_box_slt.exists()) {
+        listview.scrollForward();
+        sleep(200);
       }
+      wen_box = wen_box_slt.findOne();
       continue
     }
     classNameContains("com.uc.webview.export").waitFor();
