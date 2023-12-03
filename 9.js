@@ -163,12 +163,8 @@ function do_pinglun() {
   let text_edit = text("欢迎发表你的观点");
   while (true) {
     fClear();
-    try {
-      fInfo("尝试点击title:" + id("general_card_title_id").findOnce(i).text());
-      real_click(id("general_card_title_id").findOnce(i).parent().parent());
-    } catch (error) {
-      throw ("当前界面找不到带有评论框的文章");
-    }
+    fInfo("尝试点击title:" + id("general_card_title_id").findOnce(i).text());
+    real_click(id("general_card_title_id").findOnce(i).parent().parent());
     log("等待加载");
     idContains("image-text-content").waitFor();
     log("查找评论框");
