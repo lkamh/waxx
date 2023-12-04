@@ -2665,6 +2665,7 @@ function xxqg(userinfo) {
   //   sleep(6000);
   //   do e = random(b.bounds().centerX(), b.bounds().right), c = b.bounds().centerY(), fInfo("点击设置按钮: " + e + "," + c), click(e, c); while (!id("setting_sign_out").findOne(1500))
   // }
+  sleep(3000);
   fInfo("minebounds: " + b.bounds());
   do e = random(b.bounds().centerX(), b.bounds().right), c = b.bounds().centerY(), fInfo("点击设置按钮: " + e + "," + c), click(e, c); while (!id("setting_sign_out").findOne(1500));
   log("等待退出登录");
