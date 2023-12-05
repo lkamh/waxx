@@ -106,10 +106,10 @@ fInfo("正在加载对战题库......请稍等\n题库版本:" + update_info["ti
 var tiku = [];
 try {
   tiku = get_tiku_by_http(update_info["tiku_link"]);
-  fInfo("题库数量：" + update_info["tiku_link"].split('_')[2].slice(0, -4));
+  fInfo("题库数量:" + update_info["tiku_link"].split('_')[2].slice(0, -4));
 } catch (e) {
   tiku = get_tiku_by_http(update_info["tiku_link2"]);
-  fInfo("题库数量：" + update_info["tiku_link2"].split('_')[2].slice(0, -4));
+  fInfo("题库数量:" + update_info["tiku_link2"].split('_')[2].slice(0, -4));
   toastLog("题库链接1失效");
 }
 // var tiku = get_tiku_by_gitee();
