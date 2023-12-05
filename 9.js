@@ -106,8 +106,10 @@ fInfo("如果不动就是正在下载，多等会");
 var tiku = [];
 try {
   tiku = get_tiku_by_http(update_info["tiku_link"]);
+  fInfo("题库数量：" + update_info["tiku_link"].split('_')[2]);
 } catch (e) {
   tiku = get_tiku_by_http(update_info["tiku_link2"]);
+  fInfo("题库数量：" + update_info["tiku_link2"].split('_')[2]);
   toastLog("题库链接1失效");
 }
 // var tiku = get_tiku_by_gitee();
