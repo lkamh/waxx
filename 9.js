@@ -86,7 +86,7 @@ if (!requestScreenCapture(false)) { // false为竖屏方向
 }
 //加载Google OCR插件
 if (ocr_choice == 0) {
-  fInfo("初始化MLkitOCR插件");
+  fInfo("初始化MLKitOCR插件");
   try {
     var MLKitOCR = plugins.load('org.autojs.autojspro.plugin.mlkit.ocr');
     var googleOcr = new MLKitOCR();
