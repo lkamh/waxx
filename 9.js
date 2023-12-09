@@ -2490,12 +2490,16 @@ function xxqg(userinfo) {
   // 随机打乱函数顺序
   shuffle(funcs);
   fInfo("***正在随机执行任务***");
-  sleep(2000)
+  sleep(2000);
   // 依次执行打乱后的函数
+  let startTime = new Date();
   for (var i = 0; i < funcs.length; i++) {
     var currentFunction = funcs[i];
     currentFunction();
   };
+  let endTime = new Date();
+  let seconds = (endTime - startTime) / 1000;
+  console.log("随机任务执行时间：" + seconds + "秒")
 
   // 洗牌算法，随机打乱数组
   function shuffle(array) {
