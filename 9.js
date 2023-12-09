@@ -1131,7 +1131,7 @@ function do_duizhan1(renshu) {
       let right_xuan2 = '';
       let ans_txt = '';
       for (let xuan_txt of xuan_txt_list) {
-        let txt = xuan_txt.replace(/^[A-Z]\.?\,?/gi, "");;
+        let txt = xuan_txt.replace(/^[A-Z]\.?\,?/gi, "");
         for (let ans of ans_list) {
           let similar = str_similar(ans, txt);
           if (similar > max_simi) {
