@@ -2500,6 +2500,9 @@ function xxqg(userinfo) {
   let endTime = new Date();
   let seconds = (endTime - startTime) / 1000;
   console.log("随机任务执行时间：" + seconds + "秒")
+  if (seconds <= 10) {
+    className("android.webkit.WebView").scrollable().findOne().scrollForward();
+  }
 
   // 洗牌算法，随机打乱数组
   function shuffle(array) {
