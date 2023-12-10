@@ -109,7 +109,7 @@ try {
   tiku = get_tiku_by_http(update_info["tiku_link"]);
 } catch (e) {
   tiku = get_tiku_by_http(update_info["tiku_link2"]);
-  fInfo("题目数量:" + update_info["tiku_link2"].split('_')[2].slice(0, -4));
+  fInfo("题库题数:" + update_info["tiku_link2"].split('_')[2].slice(0, -4));
   toastLog("题库链接1失效");
 }
 // var tiku = get_tiku_by_gitee();
@@ -2500,9 +2500,6 @@ function xxqg(userinfo) {
   let endTime = new Date();
   let seconds = (endTime - startTime) / 1000;
   console.log("随机任务执行时间：" + seconds + "秒")
-  if (seconds <= 10) {
-    className("android.webkit.WebView").scrollable().findOne().scrollForward();
-  }
 
   // 洗牌算法，随机打乱数组
   function shuffle(array) {
