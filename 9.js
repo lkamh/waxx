@@ -2526,7 +2526,7 @@ function xxqg(userinfo) {
     if (true == shipin) {
       let jifen_list = className("android.widget.ListView").findOne();
       if ("已完成" != jifen_list.findOne(textEndsWith("视听学习")).parent().child(4).text()) {
-        console.verbose("无障碍服务：" + auto.service);
+        // console.verbose("无障碍服务：" + auto.service);
         toastLog("开始视听次数");
         do_shipin();
       } else {
