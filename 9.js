@@ -109,7 +109,7 @@ try {
   tiku = get_tiku_by_http(update_info["tiku_link"]);
 } catch (e) {
   tiku = get_tiku_by_http(update_info["tiku_link2"]);
-  fInfo("题目数量:" + update_info["tiku_link2"].split('_')[2].slice(0, -4));
+  fInfo("题库题数:" + update_info["tiku_link2"].split('_')[2].slice(0, -4));
   toastLog("题库链接1失效");
 }
 // var tiku = get_tiku_by_gitee();
@@ -1131,7 +1131,7 @@ function do_duizhan1(renshu) {
       let right_xuan2 = '';
       let ans_txt = '';
       for (let xuan_txt of xuan_txt_list) {
-        let txt = xuan_txt.replace(/^[A-Z]\.?\,?/gi, "");;
+        let txt = xuan_txt.replace(/^[A-Z]\.?\,?/gi, "");
         for (let ans of ans_list) {
           let similar = str_similar(ans, txt);
           if (similar > max_simi) {
@@ -2490,12 +2490,16 @@ function xxqg(userinfo) {
   // 随机打乱函数顺序
   shuffle(funcs);
   fInfo("***正在随机执行任务***");
-  sleep(2000)
+  sleep(2000);
   // 依次执行打乱后的函数
+  let startTime = new Date();
   for (var i = 0; i < funcs.length; i++) {
     var currentFunction = funcs[i];
     currentFunction();
   };
+  let endTime = new Date();
+  let seconds = (endTime - startTime) / 1000;
+  console.log("随机任务执行时间：" + seconds + "秒")
 
   // 洗牌算法，随机打乱数组
   function shuffle(array) {
@@ -2522,7 +2526,7 @@ function xxqg(userinfo) {
     if (true == shipin) {
       let jifen_list = className("android.widget.ListView").findOne();
       if ("已完成" != jifen_list.findOne(textEndsWith("视听学习")).parent().child(4).text()) {
-        console.verbose("无障碍服务：" + auto.service);
+        // console.verbose("无障碍服务：" + auto.service);
         toastLog("开始视听次数");
         do_shipin();
       } else {
