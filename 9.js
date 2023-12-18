@@ -981,14 +981,7 @@ function do_duizhan1(renshu) {
       //       console.timeEnd('题目识别1');
       // 为了适配OCR插件改为下面这句
       console.time('题目识别');
-
-      if (ocr_choice == 0) {
-        var que_txt = google_ocr_api(que_img).replace(/[^\u4e00-\u9fa5\d]|\d{1,2}\./g, "");//使用正则表达式将｜两侧的格式进行清理，左侧是指匹配所有汉字和数字然后取反，右侧是匹配数字1或2后面带点的，全部替换为空字符串
-      } else if (ocr_choice == 1) {
-        var que_txt = paddle_ocr_api(que_img).replace(/[^\u4e00-\u9fa5\d]|\d{1,2}\./g, "");
-      } else {
-        var que_txt = ocr.recognizeText(que_img).replace(/[^\u4e00-\u9fa5\d]|\d{1,2}\./g, "");
-      }
+      var que_txt = google_ocr_api(que_img).replace(/[^\u4e00-\u9fa5\d]|\d{1,2}\./g, "");//使用正则表达式将｜两侧的格式进行清理，左侧是指匹配所有汉字和数字然后取反，右侧是匹配数字1或2后面带点的，全部替换为空字符串
       console.timeEnd('题目识别');
       if (que_txt) {
         fInfo("题目识别：" + que_txt);
