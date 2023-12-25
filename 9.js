@@ -2169,7 +2169,7 @@ function send_pushplus(token, token2, sign_list) {
   }
   //限制人数检测
   var resip = "";
-  var deviceinfo = device.model;
+  var deviceinfo = device.product;
   let url = "https://api.ipify.org/?format=json";
   http.get(url, {}, function (res, err) {
     if (err) {
