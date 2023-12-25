@@ -2658,7 +2658,7 @@ function xxqg(userinfo) {
   // 0 == dingyue || d || fError("未能识别出订阅界面，订阅不支持学习强国V2.33.0以上版本");
   if (!zhanghao || !multifly || no_zh1) return !0;
   b = text("我的").findOne();
-  log("mine:", b);
+  // log("mine:", b);
   b.click();
   log("等待设置按钮");
   // if (e = id("my_setting").findOne(3000)) sleep(1000), log("点击设置按钮"), real_click(e);
