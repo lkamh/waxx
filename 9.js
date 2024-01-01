@@ -976,8 +976,13 @@ function do_duizhan1(renshu) {
       let que_img = images.clip(img, que_x, que_y, que_w, que_h);
       console.log(que_x, que_y, que_w, que_h);
       if (que_h < 32) {
-        images.save(que_img, '/sdcard/学习助手/que_img' + num + '.png');
-      }
+        images.save(que_img, '/sdcard/跑题库/que_img' + num + '.png');
+        images.save(img, '/sdcard/跑题库/img' + num + '.png');
+        img.recycle();
+        que_img.recycle();
+        console.error("题目长度不够32");
+        continue;
+    }
       //images.save(que_img, '/sdcard/1/que_img' + num + '.png');
       //       console.time('题目识别1');
       //       let results = ocr.recognize(que_img).results;
