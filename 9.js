@@ -2545,7 +2545,7 @@ function xxqg(userinfo) {
     if (true == wenzhang) {
       let jifen_list = className("android.widget.ListView").findOne();
       if ("已完成" != jifen_list.findOne(textEndsWith("选读文章")).parent().child(4).text()) {
-        console.verbose("无障碍服务：" + auto.service);
+        // console.verbose("无障碍服务：" + auto.service);
         toastLog("开始文章次数与时长");
         do_wenzhang();
       } else {
